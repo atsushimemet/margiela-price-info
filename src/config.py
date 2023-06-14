@@ -2,7 +2,7 @@ from src.local_config import CLIENT_ME, TwitterAPI  # noqa
 from pathlib import Path
 
 REQ_URL = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706"
-MAX_PAGE = 40
+MAX_PAGE = 10  # NOTE: auto_postが300ほどしかできない。
 HITS_PER_PAGE = 30
 
 
