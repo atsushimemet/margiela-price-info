@@ -20,17 +20,17 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 
-def get_id_list(brand: str) -> list:
+def get_id_list(yyyymmdd: str, brand: str) -> list:
     return [
         int(f.split("_")[2].split(".txt")[0])
         for f in os.listdir(path_output_dir / brand)
-        if f.startswith("tweet")
+        if f.startswith("tweet") and yyyymmdd in f
     ]
 
 
 def main(yyyymmdd: str, brand: str):
-    start_idx = min(get_id_list(brand))
-    end_idx = max(get_id_list(brand))
+    start_idx = min(get_id_list(yyyymmdd, brand))
+    end_idx = max(get_id_list(yyyymmdd, brand))
     for idx in range(start_idx, end_idx + 1):
         logger.info(f"auto load tweet:{idx}")
         try:
