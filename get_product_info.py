@@ -6,6 +6,7 @@ import requests
 from src.config import req_params, WANT_ITEMS, REQ_URL, MAX_PAGE, path_output_dir
 import datetime
 import argparse
+from logzero import logger
 
 
 def main(brand: str):
@@ -17,6 +18,7 @@ def main(brand: str):
     df = pd.DataFrame(columns=WANT_ITEMS)
 
     # ページループ
+    logger.info("loop start!")
     while True:
         req_params["page"] = cnt
         res = requests.get(REQ_URL, req_params)
@@ -38,6 +40,7 @@ def main(brand: str):
         if cnt == MAX_PAGE:
             print("MAX PAGEに到達したので、ループ終了")
             break
+        logger.info(f"{cnt} end!")
         cnt += 1
         # リクエスト制限回避
         sleep(1)
