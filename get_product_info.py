@@ -9,9 +9,9 @@ import argparse
 from logzero import logger
 
 
-def main(brand: str):
+def main(brand: str, item: str):
     cnt = 1
-    keyword = f"{brand} 財布 バッグ 中古"
+    keyword = f"{brand} {item} 中古"
 
     req_params["page"] = cnt
     req_params["keyword"] = keyword
@@ -73,9 +73,10 @@ def main(brand: str):
 def arg_parse():
     parser = argparse.ArgumentParser()
     parser.add_argument("brand", type=str)
+    parser.add_argument("item", type=str)
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = arg_parse()
-    main(args.brand)
+    main(args.brand, args.item)
