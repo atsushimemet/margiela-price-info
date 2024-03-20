@@ -1,12 +1,14 @@
-from src.local_config import CLIENT_ME, TwitterAPI  # noqa
 from pathlib import Path
+from typing import Dict, Union
+
+from src.local_config import CLIENT_ME, TwitterAPI  # noqa
 
 REQ_URL = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706"
 MAX_PAGE = 10  # NOTE: auto_postが300ほどしかできない。
 HITS_PER_PAGE = 30
 
 
-req_params = {
+req_params: Dict[str, Union[str, int, Dict[str, str]]] = {
     "applicationId": CLIENT_ME["APPLICATION_ID"],
     "affiliateId": CLIENT_ME["AFF_ID"],
     "format": "json",
