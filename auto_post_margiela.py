@@ -9,15 +9,13 @@ from logzero import logger
 
 from src.config import TwitterAPI, path_output_dir
 
-consumer_key = TwitterAPI.Key
-consumer_secret = TwitterAPI.KeySecret
-access_token = TwitterAPI.AccessToken
-access_token_secret = TwitterAPI.AccessTokenSecret
-
-# 認証
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-api = tweepy.API(auth)
+client = tweepy.Client(
+    bearer_token=TwitterAPI.BearerToken,
+    consumer_key=TwitterAPI.Key,
+    consumer_secret=TwitterAPI.KeySecret,
+    access_token=TwitterAPI.AccessToken,
+    access_token_secret=TwitterAPI.AccessTokenSecret,
+)
 
 
 def get_id_list(yyyymmdd: str, brand: str) -> list:
@@ -38,7 +36,7 @@ def main(yyyymmdd: str, brand: str):
                 path_output_dir / brand / f"tweet_{yyyymmdd}_{idx}.txt", "r"
             ) as f:
                 try:
-                    api.update_status(f.read())
+                    client.create_tweet(text=f.read())
                     sleep(1)
                 except tweepy.errors.Forbidden as e:
                     logger.info(f"{e}")
