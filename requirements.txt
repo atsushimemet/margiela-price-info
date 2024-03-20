@@ -10,3 +10,4 @@ logzero
 pytest
 types-python-dateutil
 tweepy
+pillow
