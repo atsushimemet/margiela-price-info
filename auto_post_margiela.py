@@ -7,7 +7,7 @@ from time import sleep
 import tweepy
 from logzero import logger
 
-from src.config import TwitterAPI, path_output_dir
+from src.config import DAILY_FREE_TWEET_LIMIT, TwitterAPI, path_output_dir
 
 client = tweepy.Client(
     bearer_token=TwitterAPI.BearerToken,
@@ -43,6 +43,9 @@ def main(yyyymmdd: str, brand: str):
         except FileNotFoundError:
             logger.info(f"file not found:{idx}")
             continue
+        if idx + 1 == DAILY_FREE_TWEET_LIMIT:
+            logger.info(f"DAILY_FREE_TWEET_LIMIT:{DAILY_FREE_TWEET_LIMIT} so fin!")
+            break
 
 
 def arg_parse():

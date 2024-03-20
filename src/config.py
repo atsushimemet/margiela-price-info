@@ -26,3 +26,4 @@ WANT_ITEMS = [
 ]
 
 path_output_dir = Path("./data/output/")
+DAILY_FREE_TWEET_LIMIT = 50
