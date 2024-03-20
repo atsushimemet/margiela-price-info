@@ -1,12 +1,13 @@
-import json
-from time import sleep
+import argparse
+import datetime
 import os
+from time import sleep
+
 import pandas as pd
 import requests
-from src.config import req_params, WANT_ITEMS, REQ_URL, MAX_PAGE, path_output_dir
-import datetime
-import argparse
 from logzero import logger
+
+from src.config import MAX_PAGE, REQ_URL, WANT_ITEMS, path_output_dir, req_params
 
 
 def main(brand: str, item: str):
@@ -23,20 +24,24 @@ def main(brand: str, item: str):
         req_params["page"] = cnt
         res = requests.get(REQ_URL, req_params)
         res_code = res.status_code
-        res = json.loads(res.text)
+
         if res_code != 200:
+            # ここではまだ res.text や res.json() を使わず、エラーを出力します。
             print(
                 f"""
-            ErrorCode -> {res_code}\n
-            Error -> {res['error']}\n
-            Page -> {cnt}"""
+                ErrorCode -> {res_code}\n
+                Page -> {cnt}
+            """
             )
         else:
-            if res["hits"] == 0:
+            # ステータスコードが200の場合のみ、レスポンスをJSONとして解析します。
+            res_date = res.json()  # JSONデータに変換
+            if res_date["hits"] == 0:
                 print("返ってきた商品数の数が0なので、ループ終了")
                 break
-            tmp_df = pd.DataFrame(res["Items"])[WANT_ITEMS]
+            tmp_df = pd.DataFrame(res_date["Items"])[WANT_ITEMS]
             df = pd.concat([df, tmp_df], ignore_index=True)
+            break
         if cnt == MAX_PAGE:
             print("MAX PAGEに到達したので、ループ終了")
             break
@@ -53,7 +58,7 @@ def main(brand: str, item: str):
     result_list = []
 
     # データフレームの各行をループで処理
-    for index, row in df.iterrows():
+    for row in df.iterrows():
         item_name = row["itemName"]
         price = row["itemPrice"]
         url = row["itemUrl"]
