@@ -43,6 +43,10 @@ def main(yyyymmdd: str, brand: str):
                 except tweepy.errors.TooManyRequests as e:
                     logger.info(f"Rate limit exceeded: {e}")
                     break
+                except tweepy.errors.BadRequest as e:
+                    logger.error(
+                        f"Bad request, likely too long tweet text: {e}. Text length: {len(f.read())}"
+                    )
         except FileNotFoundError:
             logger.info(f"file not found:{idx}")
             continue
