@@ -40,12 +40,16 @@ def main(yyyymmdd: str, brand: str):
                     sleep(1)
                 except tweepy.errors.Forbidden as e:
                     logger.info(f"{e}")
+                except tweepy.errors.TooManyRequests as e:
+                    logger.info(f"Rate limit exceeded: {e}")
+                    break
         except FileNotFoundError:
             logger.info(f"file not found:{idx}")
             continue
         if idx + 1 == DAILY_FREE_TWEET_LIMIT:
             logger.info(f"DAILY_FREE_TWEET_LIMIT:{DAILY_FREE_TWEET_LIMIT} so fin!")
             break
+    logger.info("Processing completed")
 
 
 def arg_parse():
