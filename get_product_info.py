@@ -41,7 +41,6 @@ def main(brand: str, item: str):
                 break
             tmp_df = pd.DataFrame(res_date["Items"])[WANT_ITEMS]
             df = pd.concat([df, tmp_df], ignore_index=True)
-            break
         if cnt == MAX_PAGE:
             print("MAX PAGEに到達したので、ループ終了")
             break
