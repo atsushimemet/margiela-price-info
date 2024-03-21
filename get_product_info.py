@@ -57,7 +57,7 @@ def main(brand: str, item: str):
     result_list = []
 
     # データフレームの各行をループで処理
-    for row in df.iterrows():
+    for _, row in df.iterrows():
         item_name = row["itemName"]
         price = row["itemPrice"]
         url = row["itemUrl"]
