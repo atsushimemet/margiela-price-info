@@ -50,6 +50,8 @@ source env/bin/activate
 - src/config.pyファイルを編集して、プロジェクトの設定をカスタマイズします。特に、Twitter APIの認証情報を設定する必要があります。
 - run.sh内のbrand/itemの更新
 - [ブランド参考](https://buy.watchnian.com/column/detail/333/)
+- [バッグモデル参考](https://komehyo.jp/komeru/1062)
+- [インプットデータ](https://docs.google.com/spreadsheets/d/1pqS3Y0E1EIig6_7zkzGgUdf5ECIqQfMYsqYc_CUaPCA/edit#gid=0)
 ## 5. ローカル設定反映
 local_config.pyをsrcディレクトリに作成して、ローカル環境専用の設定を追加します（このファイルはGitで追跡されません）。
 # 実行方法
