@@ -11,7 +11,7 @@ days_difference=$(( ($current_seconds - $start_seconds) / 86400 ))
 # 経過日数が偶数の場合にスクリプトを実行
 if [ $((days_difference % 2)) -eq 0 ]; then
     echo "Script is running on : current_date:$current_date, days_difference:$days_difference"
-    # /bin/zsh /path/to/your/script/run.sh
+    ./run.sh
 else
     echo "Script is not running on : current_date:$current_date, days_difference:$days_difference"
 fi
