@@ -65,7 +65,7 @@ def main(brand: str, item: str):
 
     # 結果のリストを表示
     for i, data in enumerate(result_list):
-        tweet_text = f"アイテム名: {data[0]}\n価格: {data[1]}\nURL: {data[2]}"
+        tweet_text = f"アイテム名: {data[0]}\n価格: {data[1]}\nURL: {data[2]} PR"
         # 本日日付フォルダ作成
         if not os.path.isdir(path_output_dir / brand):
             os.mkdir(path_output_dir / brand)
