@@ -31,18 +31,6 @@ def fetch_products(brand, item):
     return df
 
 
-# def save_tweet_texts(brand, df):
-#     today = datetime.datetime.today().strftime("%Y%m%d")
-#     output_dir = Path(path_output_dir) / brand
-#     output_dir.mkdir(parents=True, exist_ok=True)
-#     for i, row in df.iterrows():
-#         tweet_text = f"アイテム名: {row['itemName']}\n価格: {row['itemPrice']}\nURL: {row['itemUrl']} PR"
-#         tweet_file_path = output_dir / f"tweet_{today}_{i}.txt"
-#         with open(tweet_file_path, "w") as file:
-#             file.write(tweet_text)
-#         logger.info(f"Saved: {tweet_file_path}")
-
-
 def save_tweet_texts(brand, df, output_dir):
     today = datetime.datetime.today().strftime("%Y%m%d")
     output_dir = Path(output_dir) / brand
