@@ -7,15 +7,15 @@ import pandas as pd
 import requests
 from logzero import logger
 
-from src.config import MAX_PAGE, REQ_URL, WANT_ITEMS, path_output_dir, req_params
+from src.config import MAX_PAGE, PATH_OUTPUT_DIR, REQ_PARAMS, REQ_URL, WANT_ITEMS
 
 
 def fetch_products(brand, item):
     keyword = f"{brand} {item} 中古"
     df = pd.DataFrame(columns=WANT_ITEMS)
     for page in range(1, MAX_PAGE + 1):
-        req_params.update({"page": page, "keyword": keyword})
-        response = requests.get(REQ_URL, req_params)
+        REQ_PARAMS.update({"page": page, "keyword": keyword})
+        response = requests.get(REQ_URL, REQ_PARAMS)
         if response.status_code != 200:
             logger.error(f"ErrorCode -> {response.status_code}\nPage -> {page}")
             continue
@@ -45,7 +45,7 @@ def save_tweet_texts(brand, df, output_dir):
 
 def main(brand: str, item: str):
     df = fetch_products(brand, item)
-    save_tweet_texts(brand, df, path_output_dir)
+    save_tweet_texts(brand, df, PATH_OUTPUT_DIR)
 
 
 def arg_parse():

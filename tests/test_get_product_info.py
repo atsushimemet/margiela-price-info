@@ -38,12 +38,12 @@ def test_fetch_products__df_len_expected(status_code, expected_call_count):
 @pytest.fixture
 def mock_env(tmp_path):
     # 環境変数やパスを一時パスに設定する
-    from src.config import path_output_dir
+    from src.config import PATH_OUTPUT_DIR
 
-    original_path = path_output_dir
-    path_output_dir = tmp_path  # 一時ディレクトリを設定
+    original_path = PATH_OUTPUT_DIR
+    PATH_OUTPUT_DIR = tmp_path  # 一時ディレクトリを設定
     yield tmp_path
-    path_output_dir = original_path  # テスト後に元に戻す
+    PATH_OUTPUT_DIR = original_path  # テスト後に元に戻す
 
 
 def test_save_tweet_texts(mock_env):
