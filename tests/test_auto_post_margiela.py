@@ -1,10 +1,8 @@
-import os
-from io import StringIO
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from auto_post_margiela import get_id_list, main
+from auto_post_margiela import get_id_list, logger, main
 
 
 @pytest.fixture
@@ -12,12 +10,10 @@ def setup_test_files(tmp_path):
     # テスト用のディレクトリとファイルを作成する
     test_dir = tmp_path / "test_brand"
     test_dir.mkdir()
-    with open(test_dir / "tweet_20240101_1.txt", "w") as f:
-        f.write("Test tweet 1")
-    with open(test_dir / "tweet_20240101_2.txt", "w") as f:
-        f.write("Test tweet 2")
-    with open(test_dir / "tweet_20240101_3.txt", "w") as f:
-        f.write("Test tweet 3")
+    for i in range(1, 4):
+        with open(test_dir / f"tweet_20240101_{i}.txt", "w") as f:
+            f.write(f"Test tweet {i}")
+    return test_dir
 
 
 def test_get_id_list(setup_test_files, tmp_path):
@@ -26,23 +22,24 @@ def test_get_id_list(setup_test_files, tmp_path):
     assert id_list == [1, 2, 3]
 
 
-# @patch("sys.stdout", new_callable=StringIO)
-# def test_main(setup_test_files, mock_stdout):
-#     # main関数が正常に動作し、期待どおりのログが出力されることを確認する
-#     main("20240101", "test_brand")
-#     expected_output = """auto load tweet:1
-# auto load tweet:2
-# auto load tweet:3
-# Processing completed
-# """
-#     assert mock_stdout.getvalue() == expected_output
+def test_main(setup_test_files, monkeypatch):
+    # PATH_OUTPUT_DIRをモックして、setup_test_filesのパスを指定
+    monkeypatch.setattr("auto_post_margiela.PATH_OUTPUT_DIR", setup_test_files.parent)
 
+    # tweepy.Clientのモック
+    mock_tweepy_client = MagicMock()
+    monkeypatch.setattr("auto_post_margiela.client", mock_tweepy_client)
 
-# @patch("sys.stdout", new_callable=StringIO)
-# def test_main_file_not_found(setup_test_files, mock_stdout):
-#     # ファイルが存在しない場合に、該当するログが出力されることを確認する
-#     main("20240101", "non_existing_brand")
-#     expected_output = (
-#         "file not found:1\nfile not found:2\nfile not found:3\nProcessing completed\n"
-#     )
-#     assert mock_stdout.getvalue() == expected_output
+    # loggerのモック
+    with patch.object(logger, "info") as mock_logger_info, patch.object(
+        logger, "error"
+    ) as mock_logger_error:
+        main("20240101", "test_brand")
+        # ログの呼び出しを検証
+        mock_logger_info.assert_any_call("auto load tweet:1")
+        mock_logger_info.assert_any_call("auto load tweet:2")
+        mock_logger_info.assert_any_call("auto load tweet:3")
+        mock_logger_info.assert_any_call("Processing completed")
+
+        # エラーログが呼ばれていないことを確認
+        mock_logger_error.assert_not_called()
