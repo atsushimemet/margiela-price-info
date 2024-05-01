@@ -1,6 +1,6 @@
 #!/bin/zsh
 # run_every_other_day.sh
-start_date="2024-05-01"
+start_date="2024-05-02"
 current_date=$(date +%Y-%m-%d)
 
 # 日付を YYYY-MM-DD 形式で扱い、日数の差を計算 (macOS用)
