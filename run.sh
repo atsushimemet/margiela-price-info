@@ -3,10 +3,10 @@
 log_file="/Users/ozawaatsushi/Repository/NewBusiness/margiela-price-info/log.txt"
 
 # CSVファイルのパス
-csv_file="data/input/arisa_brand_item_model.csv"
+csv_file="/Users/ozawaatsushi/Repository/NewBusiness/margiela-price-info/data/input/arisa_brand_item_model.csv"
 
 # カウンターを初期化
-counter_file=".counter"
+counter_file="/Users/ozawaatsushi/Repository/NewBusiness/margiela-price-info/.counter"
 if [ ! -f "$counter_file" ]; then
     echo "1" > "$counter_file"
     echo "$(date): Counter initialized to 1." >> $log_file
@@ -45,5 +45,5 @@ echo "$(date): Processing item: $brand, $item" >> $log_file
 date=$(date +%Y%m%d)
 
 # Pythonスクリプトを実行
-python get_product_info.py "$brand" "$item"
-python auto_post_margiela.py "$date" "$brand"
+/Users/ozawaatsushi/.pyenv/versions/3.10.5/bin/python /Users/ozawaatsushi/Repository/NewBusiness/margiela-price-info/get_product_info.py "$brand" "$item"
+/Users/ozawaatsushi/.pyenv/versions/3.10.5/bin/python /Users/ozawaatsushi/Repository/NewBusiness/margiela-price-info/auto_post_margiela.py "$date" "$brand"
