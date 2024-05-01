@@ -7,7 +7,7 @@ from time import sleep
 import tweepy
 from logzero import logger
 
-from src.config import DAILY_FREE_TWEET_LIMIT, TwitterAPI, path_output_dir
+from src.config import DAILY_FREE_TWEET_LIMIT, PATH_OUTPUT_DIR, TwitterAPI
 
 client = tweepy.Client(
     bearer_token=TwitterAPI.BearerToken,
@@ -21,7 +21,7 @@ client = tweepy.Client(
 def get_id_list(yyyymmdd: str, brand: str) -> list:
     return [
         int(f.split("_")[2].split(".txt")[0])
-        for f in os.listdir(path_output_dir / brand)
+        for f in os.listdir(PATH_OUTPUT_DIR / brand)
         if f.startswith("tweet") and yyyymmdd in f
     ]
 
@@ -33,7 +33,7 @@ def main(yyyymmdd: str, brand: str):
         logger.info(f"auto load tweet:{idx}")
         try:
             with open(
-                path_output_dir / brand / f"tweet_{yyyymmdd}_{idx}.txt", "r"
+                PATH_OUTPUT_DIR / brand / f"tweet_{yyyymmdd}_{idx}.txt", "r"
             ) as f:
                 try:
                     client.create_tweet(text=f.read())
