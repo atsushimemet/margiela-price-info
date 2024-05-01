@@ -1,6 +1,6 @@
 import argparse
 import datetime
-import os
+from pathlib import Path
 from time import sleep
 
 import pandas as pd
@@ -10,68 +10,42 @@ from logzero import logger
 from src.config import MAX_PAGE, REQ_URL, WANT_ITEMS, path_output_dir, req_params
 
 
-def main(brand: str, item: str):
-    cnt = 1
+def fetch_products(brand, item):
     keyword = f"{brand} {item} 中古"
-
-    req_params["page"] = cnt
-    req_params["keyword"] = keyword
     df = pd.DataFrame(columns=WANT_ITEMS)
-
-    # ページループ
-    logger.info("loop start!")
-    while True:
-        req_params["page"] = cnt
-        res = requests.get(REQ_URL, req_params)
-        res_code = res.status_code
-
-        if res_code != 200:
-            # ここではまだ res.text や res.json() を使わず、エラーを出力します。
-            print(
-                f"""
-                ErrorCode -> {res_code}\n
-                Page -> {cnt}
-            """
-            )
-        else:
-            # ステータスコードが200の場合のみ、レスポンスをJSONとして解析します。
-            res_date = res.json()  # JSONデータに変換
-            if res_date["hits"] == 0:
-                print("返ってきた商品数の数が0なので、ループ終了")
-                break
-            tmp_df = pd.DataFrame(res_date["Items"])[WANT_ITEMS]
-            df = pd.concat([df, tmp_df], ignore_index=True)
-        if cnt == MAX_PAGE:
-            print("MAX PAGEに到達したので、ループ終了")
+    for page in range(1, MAX_PAGE + 1):
+        req_params.update({"page": page, "keyword": keyword})
+        response = requests.get(REQ_URL, req_params)
+        if response.status_code != 200:
+            logger.error(f"ErrorCode -> {response.status_code}\nPage -> {page}")
+            continue
+        data = response.json()
+        if data["hits"] == 0:
+            logger.info("No more products found.")
             break
-        logger.info(f"{cnt} end!")
-        cnt += 1
-        # リクエスト制限回避
-        sleep(1)
+        tmp_df = pd.DataFrame(data["Items"])[WANT_ITEMS]
+        df = pd.concat([df, tmp_df], ignore_index=True)
+        logger.info(f"Page {page} processed.")
+        sleep(1)  # Avoid hitting API rate limit
+    logger.info("fetch products Finished!!")
+    return df
 
-    print("Finished!!")
 
+def save_tweet_texts(brand, df):
     today = datetime.datetime.today().strftime("%Y%m%d")
-
-    # データフレームからリストを作成するための空のリスト
-    result_list = []
-
-    # データフレームの各行をループで処理
-    for _, row in df.iterrows():
-        item_name = row["itemName"]
-        price = row["itemPrice"]
-        url = row["itemUrl"]
-        result_list.append([item_name, price, url])
-
-    # 結果のリストを表示
-    for i, data in enumerate(result_list):
-        tweet_text = f"アイテム名: {data[0]}\n価格: {data[1]}\nURL: {data[2]} PR"
-        # 本日日付フォルダ作成
-        if not os.path.isdir(path_output_dir / brand):
-            os.mkdir(path_output_dir / brand)
-        # テキストファイルに書き込む
-        with open(path_output_dir / brand / f"tweet_{today}_{i}.txt", "w") as file:
+    output_dir = Path(path_output_dir) / brand
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for i, row in df.iterrows():
+        tweet_text = f"アイテム名: {row['itemName']}\n価格: {row['itemPrice']}\nURL: {row['itemUrl']} PR"
+        tweet_file_path = output_dir / f"tweet_{today}_{i}.txt"
+        with open(tweet_file_path, "w") as file:
             file.write(tweet_text)
+        logger.info(f"Saved: {tweet_file_path}")
+
+
+def main(brand: str, item: str):
+    df = fetch_products(brand, item)
+    save_tweet_texts(brand, df)
 
 
 def arg_parse():
