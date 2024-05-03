@@ -10,7 +10,7 @@ log_file="$BASE_DIR/log.txt"
 start_time=$(date '+%Y-%m-%d %H:%M:%S')
 echo "Script started at: $start_time" >> $log_file
 
-start_date="2024-05-02"
+start_date="2024-05-03"
 current_date=$(date +%Y-%m-%d)
 
 # 日付を YYYY-MM-DD 形式で扱い、日数の差を計算 (macOS用)
