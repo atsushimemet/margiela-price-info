@@ -35,8 +35,12 @@ def save_tweet_texts(brand, df, output_dir):
     today = datetime.datetime.today().strftime("%Y%m%d")
     output_dir = Path(output_dir) / brand
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    with open("./data/input/tag.txt") as f:
+        tag = f.read()
+
     for i, row in df.iterrows():
-        tweet_text = f"アイテム名: {row['itemName']}\n価格: {row['itemPrice']}\nURL: {row['itemUrl']} PR"
+        tweet_text = f"アイテム名: {row['itemName']}\n価格: {row['itemPrice']}\nURL: {row['itemUrl']} {tag}"
         tweet_file_path = output_dir / f"tweet_{today}_{i}.txt"
         with open(tweet_file_path, "w") as file:
             file.write(tweet_text)
