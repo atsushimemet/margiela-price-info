@@ -4,7 +4,7 @@
 # # Base directory
 BASE_DIR="/Users/ozawaatsushi/Repository/NewBusiness/margiela-price-info"
 
-# log_file="$BASE_DIR/log.txt"
+log_file="$BASE_DIR/log.txt"
 # csv_file="$BASE_DIR/data/input/arisa_brand_item_model.csv"
 # counter_file="$BASE_DIR/.counter"
 
