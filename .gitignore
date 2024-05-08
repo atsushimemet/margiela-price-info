@@ -8,3 +8,4 @@ local_config.py
 .counter
 *.csv
 log.txt
+env_bfr/
