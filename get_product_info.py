@@ -11,7 +11,9 @@ from src.config import MAX_PAGE, PATH_OUTPUT_DIR, REQ_PARAMS, REQ_URL, WANT_ITEM
 
 
 def fetch_products(brand, item):
-    keyword = f"{brand} {item} 中古"
+    # keyword = f"{brand} {item} 中古"
+    keyword = f"{brand} {item}"  # TODO:05/17 イブサンローランボーテ リップ
+    logger.info(f"keyword:{keyword}")
     df = pd.DataFrame(columns=WANT_ITEMS)
     for page in range(1, MAX_PAGE + 1):
         REQ_PARAMS.update({"page": page, "keyword": keyword})
