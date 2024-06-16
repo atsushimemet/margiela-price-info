@@ -37,8 +37,10 @@ log_file="$BASE_DIR/log.txt"
 # fi
 
 # CSVのデータからbrand、item、modelを取得
-brand="BURBERRY"
-item="ショルダーバッグ"
+# WARNING:tag.txtの設定もすること
+# TODO:Bad request, likely too long tweet text: 400
+brand="ジャックムス"
+item="ワンピース"
 model=""
 item="$item $model"
 echo "$(date): Processing item: $brand, $item" >> $log_file
