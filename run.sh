@@ -39,7 +39,7 @@ log_file="$BASE_DIR/log.txt"
 # CSVのデータからbrand、item、modelを取得
 # WARNING:tag.txtの設定もすること
 # TODO:Bad request, likely too long tweet text: 400
-brand="ジャックムス"
+brand="アミ"
 item="ワンピース"
 model=""
 item="$item $model"
