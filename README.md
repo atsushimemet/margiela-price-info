@@ -10,10 +10,10 @@ requirements.txt参照
 
 ## 設定ファイル
 src/config.py:
-DAILY_FREE_TWEET_LIMIT: 1日のツイート上限数
-PATH_OUTPUT_DIR: ツイート用テキストファイルの保存先ディレクトリ
-REQ_PARAMS: 商品情報取得に必要なAPIリクエストパラメータ
-TwitterAPI: Twitter APIに接続するための認証情報
+- DAILY_FREE_TWEET_LIMIT: 1日のツイート上限数
+- PATH_OUTPUT_DIR: ツイート用テキストファイルの保存先ディレクトリ
+- REQ_PARAMS: 商品情報取得に必要なAPIリクエストパラメータ
+- TwitterAPI: Twitter APIに接続するための認証情報
 
 # 機能
 1. 商品情報の取得: brand_item_model.csv ファイルからブランド、商品名、モデル情報を読み取り、それに基づいて楽天市場APIを用いて商品情報を取得。
