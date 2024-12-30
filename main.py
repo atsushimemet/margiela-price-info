@@ -29,7 +29,7 @@ def lambda_handler(event, context):
     logfile(log_file)
 
     # CSVからブランドと商品情報を取得
-    csv_path = f"{BASE_DIR}/data/input/brand_item_model.csv"
+    csv_path = f"./data/input/brand_item_model.csv"
     brand_item_df = load_brand_item_model(csv_path)
 
     # 前回実行したアイテムIDを取得
