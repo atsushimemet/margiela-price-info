@@ -4,8 +4,5 @@ __pycache__/
 local_config.py
 .ipynb_checkpoints/
 .DS_Store
-*.webp
-.counter
-*.csv
 log.txt
 env_bfr/
