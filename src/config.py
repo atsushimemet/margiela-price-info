@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict, Union
 
+import boto3
 import tweepy
 
 from src.local_config import CLIENT_ME, TwitterAPI  # noqa
@@ -37,5 +38,7 @@ client = tweepy.Client(
 )
 
 # その他
-BASE_DIR = "./"
-PATH_OUTPUT_DIR = Path("./data/output/")
+BASE_DIR = Path("/tmp/")
+PATH_OUTPUT_DIR = BASE_DIR / "data/output/"
+
+s3_client = boto3.client("s3")
