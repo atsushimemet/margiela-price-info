@@ -68,7 +68,7 @@ def lambda_handler(event, context):
             return {"status": "No products found"}
 
         # ツイート用テキストの保存
-        save_tweet_texts(brand, df, PATH_OUTPUT_DIR)
+        save_tweet_texts(brand, df, PATH_OUTPUT_DIR, tweet_title, tags)
 
         # 自動投稿処理
         today = datetime.datetime.today().strftime("%Y%m%d")
