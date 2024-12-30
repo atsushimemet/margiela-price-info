@@ -9,24 +9,15 @@ import requests
 import tweepy
 from logzero import logfile, logger
 
-from src.config import DAILY_FREE_TWEET_LIMIT, PATH_OUTPUT_DIR, REQ_PARAMS, TwitterAPI
-
-# 環境変数
-MAX_PAGE = int(os.environ.get("MAX_PAGE", 5))
-REQ_URL = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706"
-BASE_DIR = "./"
-WANT_ITEMS = [
-    "itemName",
-    "itemPrice",
-    "itemUrl",
-]
-TWITTER_API_URL = "https://api.twitter.com/2/tweets"
-client = tweepy.Client(
-    bearer_token=TwitterAPI.BearerToken,
-    consumer_key=TwitterAPI.Key,
-    consumer_secret=TwitterAPI.KeySecret,
-    access_token=TwitterAPI.AccessToken,
-    access_token_secret=TwitterAPI.AccessTokenSecret,
+from src.config import (
+    BASE_DIR,
+    DAILY_FREE_TWEET_LIMIT,
+    MAX_PAGE,
+    PATH_OUTPUT_DIR,
+    REQ_PARAMS,
+    REQ_URL,
+    WANT_ITEMS,
+    client,
 )
 
 
