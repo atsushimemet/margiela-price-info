@@ -136,7 +136,8 @@ def save_tweet_texts(brand, df, output_dir, tweet_title, tags):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for i, row in df.iterrows():
-        tweet_text = f"【腕時計】アイテム名: {row['itemName']}\n価格: {row['itemPrice']}\nURL: {row['itemUrl']} {tag}"
+        # タグを生成
+        tweet_text = f"【{tweet_title}】アイテム名: {row['itemName']}\n価格: {row['itemPrice']}\nURL: {row['itemUrl']}\n{tags}"
         tweet_file_path = output_dir / f"tweet_{today}_{i}.txt"
         with open(tweet_file_path, "w") as file:
             file.write(tweet_text)
