@@ -1,67 +1,61 @@
-# プロジェクト概要
-このプロジェクトは、指定されたブランドと商品に関する情報を収集し、自動でツイートを投稿する機能を提供します。
+# 概要
+このプロジェクトは、指定したブランドの商品情報を取得し、その情報をもとにTwitterに自動的にツイートするためのツール。ツイートは、商品名や価格、URLといった情報を含む内容で、指定されたブランドやアイテムのタグを付与して投稿される。
 
-# ディレクトリ構造
+# 必要な環境
+## Python
+Python 3.9
 
+## Pythonパッケージ
+requirements.txt参照
+
+## 設定ファイル
+src/config.py:
+- DAILY_FREE_TWEET_LIMIT: 1日のツイート上限数
+- PATH_OUTPUT_DIR: ツイート用テキストファイルの保存先ディレクトリ
+- REQ_PARAMS: 商品情報取得に必要なAPIリクエストパラメータ
+- TwitterAPI: Twitter APIに接続するための認証情報
+
+# 機能
+1. 商品情報の取得: brand_item_model.csv ファイルからブランド、商品名、モデル情報を読み取り、それに基づいて楽天市場APIを用いて商品情報を取得。
+2. ツイート用テキストの生成: 取得した商品情報を元に、ツイート用のテキストを作成し、指定されたディレクトリに保存。
+3. 自動投稿: 作成したテキストファイルを読み込み、Twitter APIを用いて自動的にツイート。
+4. ログ記録: 処理の過程で発生したログは、log.txt に保存され、エラーが発生した場合はその内容も記録。
+5. 次のアイテムの選択: ツイート後、処理したアイテムのIDを保存し、次回実行時には次のアイテムを選択して処理を行う。
+
+# 使用方法
+## Lambdaハンドラの実行
+このツールはAWS Lambdaなどで実行することを想定、lambda_handler 関数を呼び出すことで、商品情報の取得からツイートまで一連の処理を実行する。
+
+## 関数
+### lambda_handler
+- この関数は、Lambdaイベントを受け取って処理を開始するエントリーポイント。
+- 処理内容としては、商品情報の取得、ツイート用テキストの生成、ツイート投稿、次回実行するためのIDの保存を行う。
+
+### load_brand_item_model
+- brand_item_model.csv からブランド、商品名、モデル情報を読み込む関数。
+
+### fetch_products
+- 指定したブランド名と商品名を使って、楽天APIを呼び出して商品情報を取得。
+
+### save_tweet_texts
+- 取得した商品情報を基に、ツイート用のテキストファイルを指定されたディレクトリに保存。
+
+### auto_post_margiela
+- 指定されたディレクトリに保存されたテキストファイルを読み込み、Twitter APIを用いて自動的にツイートします。ツイート後、ファイルは削除。
+
+### save_last_executed_item_id
+- 前回実行したアイテムIDを保存する関数です。次回の実行時に、前回のIDを参照して処理を進めます。
+
+# ファイル構成
 ```
-.
-├── README.md                       # このファイル
-├── auto_post_margiela.py           # 自動ツイート投稿スクリプト
-├── data                            # データ格納用ディレクトリ
-│   ├── input                       # 入力データ（除外単語リストなど）
-│   │   └── del_word_list.txt
-│   └── output                      # 出力データ（収集した商品情報など）
-│       ├── margiela
-│       ├── supreme
-│       └── vuitton
-├── get_product_info.py             # 商品情報収集スクリプト
-├── mypy.ini                        # mypy設定ファイル
-├── notebook                        # Jupyter Notebookファイル
-│   ├── create_insta_feed.ipynb     # Instagramフィード作成ノートブック
-│   └── system_operation_check.ipynb# システム動作状態チェックノートブック
-├── requirements.txt                # 依存ライブラリ
-├── run.sh                          # スクリプト実行シェルスクリプト
-├── setup.sh                        # 環境セットアップシェルスクリプト
-├── src                             # ソースコード
-│   ├── config.py                   # 設定ファイル
-│   └── local_config.py             # ローカル設定ファイル（Git非追跡）
-└── tmp                             # 一時ファイル
-    ├── create_insta_feed.py
-    └── delete_post.py
+project_root/
+├── data/
+│   └── input/
+│       └── brand_item_model.csv
+├── src/
+│   └── config.py
+├── log.txt
+└── main.py
 ```
-# セットアップ方法
-プロジェクトのセットアップには、以下の手順が含まれます。
-## 1. Pythonのバージョンを3.10.5に設定
-このプロジェクトはPython 3.10.5で動作するよう設計されています。適切なPythonバージョンを使用していることを確認してください。pyenvなどのバージョン管理ツールを使用してPythonのバージョンを管理している場合は、以下のコマンドでバージョンを設定できます。
-```
-pyenv install 3.10.5
-pyenv local 3.10.5
-```
-## 2. 仮想環境の作成
-プロジェクト専用の仮想環境を作成することで、依存関係をプロジェクト内に閉じ込め、他のプロジェクトやシステム全体のPython環境との衝突を避けることができます。以下のコマンドを実行して仮想環境を作成します。
-python -m venv env
-作成した仮想環境をアクティベートします。
-```
-source env/bin/activate
-```
-## 3. 依存ライブラリのインストール
-次に、./setup.shを実行して、必要な依存ライブラリをインストールします
-## 4. 設定変更
-- src/config.pyファイルを編集して、プロジェクトの設定をカスタマイズします。特に、Twitter APIの認証情報を設定する必要があります。
-- run.sh内のbrand/itemの更新
-- [ブランド参考](https://buy.watchnian.com/column/detail/333/)
-- [バッグモデル参考](https://komehyo.jp/komeru/1062)
-- [インプットデータ](https://docs.google.com/spreadsheets/d/1pqS3Y0E1EIig6_7zkzGgUdf5ECIqQfMYsqYc_CUaPCA/edit#gid=0)
-## 5. ローカル設定反映
-local_config.pyをsrcディレクトリに作成して、ローカル環境専用の設定を追加します（このファイルはGitで追跡されません）。
-# 実行方法
-## 商品情報の収集と自動ツイート投稿
-run.shスクリプトを使用して、商品情報の収集と自動ツイート投稿を行います。例えば、以下のコマンドはvuittonブランドの財布に関する商品情報を収集し、自動的にツイートします。
-```
-./run.sh
-```
-# 注意事項
-Twitterの自動投稿は、無料枠では1日あたり50回までとなっています。これを超えると投稿が制限されます。
-# REF
-- https://exactsolutions.co.jp/column/rpa/python-rakutenapi-minitem/
-- https://webservice.rakuten.co.jp/documentation/ichiba-product-search
+# ログ
+- 処理の途中で発生したエラーや、ツイート成功/失敗のログは log.txt に記録される。
