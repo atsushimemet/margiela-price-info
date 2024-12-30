@@ -35,11 +35,23 @@ def lambda_handler(event, context):
     log_file = f"{BASE_DIR}/log.txt"
     logfile(log_file)
 
-    # ブランドと商品情報の設定
-    brand = "カルティエ"
-    item = "腕時計 サントスLM"
-    logger.info(f"Processing item: {brand}, {item}")
+    # CSVからブランドと商品情報を取得
+    csv_path = f"{BASE_DIR}/data/input/brand_item_model.csv"
+    brand_item_df = load_brand_item_model(csv_path)
 
+    # 前回実行したアイテムIDを取得
+    last_executed_id = get_last_executed_item_id()
+
+    # 次に実行するアイテムを選択
+    next_item_data = brand_item_df[brand_item_df["ID"] == last_executed_id + 1]
+    if next_item_data.empty:
+        return {"status": "error", "message": "No more items to process"}
+
+    # ブランド、商品情報を設定
+    brand = next_item_data["Brand"].values[0]
+    item = f"{next_item_data['Item'].values[0]} {next_item_data['Model'].values[0]}"
+
+    logger.info(f"Processing item: {brand}, {item}")
     try:
         # 商品情報の取得
         df = fetch_products(brand, item)
@@ -54,10 +66,36 @@ def lambda_handler(event, context):
         today = datetime.datetime.today().strftime("%Y%m%d")
         auto_post_margiela(today, brand)
         logger.info("Processing completed successfully.")
+        # 実行後、IDを1増やして保存
+        save_last_executed_item_id(last_executed_id + 1)
         return {"status": "success"}
     except Exception as e:
         logger.error(f"Error occurred: {e}")
         return {"status": "error", "message": str(e)}
+
+
+# CSVの読み込み処理
+def load_brand_item_model(csv_path):
+    # CSVファイルをDataFrameとして読み込み
+    df = pd.read_csv(csv_path, header=None, names=["ID", "Brand", "Item", "Model"])
+    return df
+
+
+# 前回実行したアイテムIDを取得する関数
+def get_last_executed_item_id():
+    last_executed_file = f"{BASE_DIR}/data/output/last_executed_item.txt"
+    if os.path.exists(last_executed_file):
+        with open(last_executed_file, "r") as file:
+            last_id = int(file.read().strip())
+        return last_id
+    return 0  # 初回実行時はID=0を返す（ID=1からスタート）
+
+
+# 前回実行したアイテムIDを記録する関数
+def save_last_executed_item_id(item_id):
+    last_executed_file = f"{BASE_DIR}/data/output/last_executed_item.txt"
+    with open(last_executed_file, "w") as file:
+        file.write(str(item_id))
 
 
 # 商品情報を取得する関数
