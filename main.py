@@ -18,6 +18,7 @@ from src.config import (
     REQ_URL,
     WANT_ITEMS,
     client,
+    s3_client,
 )
 
 
