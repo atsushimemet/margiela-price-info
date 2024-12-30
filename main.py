@@ -130,7 +130,7 @@ def fetch_products(brand, item):
 
 
 # ツイート用のテキストを保存する関数
-def save_tweet_texts(brand, df, output_dir):
+def save_tweet_texts(brand, df, output_dir, tweet_title, tags):
     today = datetime.datetime.today().strftime("%Y%m%d")
     output_dir = Path(output_dir) / brand
     output_dir.mkdir(parents=True, exist_ok=True)
