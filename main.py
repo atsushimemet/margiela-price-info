@@ -1,5 +1,6 @@
 import datetime
 import os
+import shutil
 from pathlib import Path
 from time import sleep
 
@@ -151,11 +152,14 @@ def auto_post_margiela(yyyymmdd, brand):
     for idx in range(start_idx, end_idx + 1):
         logger.info(f"auto load tweet:{idx}")
         try:
-            with open(
-                PATH_OUTPUT_DIR / brand / f"tweet_{yyyymmdd}_{idx}.txt", "r"
-            ) as f:
+            tweet_file_path_brand = PATH_OUTPUT_DIR / brand
+            tweet_file_path = tweet_file_path_brand / f"tweet_{yyyymmdd}_{idx}.txt"
+            with open(tweet_file_path, "r") as f:
+                tweet_text = f.read()
                 try:
-                    client.create_tweet(text=f.read())
+                    # ツイートの投稿
+                    client.create_tweet(text=tweet_text)
+                    logger.info(f"Tweet posted: {tweet_text}")
                     sleep(1)
                 except tweepy.errors.Forbidden as e:
                     logger.info(f"{e}")
@@ -173,6 +177,9 @@ def auto_post_margiela(yyyymmdd, brand):
             logger.info(f"DAILY_FREE_TWEET_LIMIT:{DAILY_FREE_TWEET_LIMIT} so fin!")
             break
     logger.info("Processing completed")
+    # 投稿処理完了後、テキストファイルを含むbrandディレクトリ削除
+    shutil.rmtree(tweet_file_path_brand)
+    logger.info(f"Deleted tweet path brand: {tweet_file_path_brand}")
 
 
 def get_id_list(yyyymmdd: str, brand: str) -> list:
