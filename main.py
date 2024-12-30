@@ -84,19 +84,34 @@ def load_brand_item_model(csv_path):
 
 # 前回実行したアイテムIDを取得する関数
 def get_last_executed_item_id():
-    last_executed_file = f"{BASE_DIR}/data/output/last_executed_item.txt"
-    if os.path.exists(last_executed_file):
-        with open(last_executed_file, "r") as file:
-            last_id = int(file.read().strip())
+    last_executed_file_key = "last_executed_item.txt"
+    bucket_name = "margiela-price-info"
+    try:
+        # S3からファイルを取得
+        response = s3_client.get_object(Bucket=bucket_name, Key=last_executed_file_key)
+        last_id = int(response["Body"].read().decode("utf-8").strip())
         return last_id
-    return 0  # 初回実行時はID=0を返す（ID=1からスタート）
+    except s3_client.exceptions.NoSuchKey:
+        # ファイルが存在しない場合はID=0を返す
+        return 0
+    except Exception as e:
+        logger.error(f"Error fetching last executed item ID from S3: {e}")
+        raise
 
 
 # 前回実行したアイテムIDを記録する関数
 def save_last_executed_item_id(item_id):
-    last_executed_file = f"{BASE_DIR}/data/output/last_executed_item.txt"
-    with open(last_executed_file, "w") as file:
-        file.write(str(item_id))
+    last_executed_file_key = "last_executed_item.txt"
+    bucket_name = "margiela-price-info"
+    try:
+        # ファイルをS3にアップロード
+        s3_client.put_object(
+            Bucket=bucket_name, Key=last_executed_file_key, Body=str(item_id)
+        )
+        logger.info(f"Successfully saved last executed item ID: {item_id}")
+    except Exception as e:
+        logger.error(f"Error saving last executed item ID to S3: {e}")
+        raise
 
 
 # 商品情報を取得する関数
