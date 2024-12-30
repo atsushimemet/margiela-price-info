@@ -6,3 +6,4 @@ local_config.py
 .DS_Store
 log.txt
 env_bfr/
+*.zip
