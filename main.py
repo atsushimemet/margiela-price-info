@@ -49,7 +49,15 @@ def lambda_handler(event, context):
 
     # ブランド、商品情報を設定
     brand = next_item_data["Brand"].values[0]
-    item = f"{next_item_data['Item'].values[0]} {next_item_data['Model'].values[0]}"
+    item = f"{next_item_data['Item'].values[0]}"
+    model = f"{next_item_data['Model'].values[0]}"
+    tags = f"#PR #{brand} #{item} #{model}"
+    if "腕時計" in item:
+        tweet_title = "高級腕時計"
+    else:
+        tweet_title = "ハイブラ"
+
+    item = " ".join([item, model])
 
     logger.info(f"Processing item: {brand}, {item}")
     try:
