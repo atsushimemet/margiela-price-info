@@ -1,7 +1,6 @@
 import datetime
 import os
 import shutil
-from pathlib import Path
 from time import sleep
 
 import pandas as pd
