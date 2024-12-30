@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     brand_item_df = load_brand_item_model(csv_path)
 
     # 前回実行したアイテムIDを取得
-    last_executed_id = get_last_executed_item_id()
+    last_executed_id = get_last_executed_item_id(brand_item_df)
 
     # 次に実行するアイテムを選択
     next_item_data = brand_item_df[brand_item_df["ID"] == last_executed_id + 1]
@@ -83,13 +83,17 @@ def load_brand_item_model(csv_path):
 
 
 # 前回実行したアイテムIDを取得する関数
-def get_last_executed_item_id():
+def get_last_executed_item_id(brand_item_df):
     last_executed_file_key = "last_executed_item.txt"
     bucket_name = "margiela-price-info"
     try:
         # S3からファイルを取得
         response = s3_client.get_object(Bucket=bucket_name, Key=last_executed_file_key)
         last_id = int(response["Body"].read().decode("utf-8").strip())
+        if (
+            last_id == brand_item_df["ID"].max()
+        ):  # NOTE:マスタの最大値に達したらループする
+            return 0
         return last_id
     except s3_client.exceptions.NoSuchKey:
         # ファイルが存在しない場合はID=0を返す
